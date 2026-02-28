@@ -1,0 +1,724 @@
+<!doctype html>
+<html lang="fi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pelien asettelu 2026</title>
+  <style>
+    :root{
+      --bg:#0b0b0f; --card:#12121a; --grid:#2a2a37; --text:#f3f3f7;
+      --muted:#bdbdc7; --accent:#7aa7ff; --danger:#ff6b6b;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
+      line-height:1.35;padding:16px;}
+    .wrap{max-width:1240px;margin:0 auto;}
+    header{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
+    h1{font-size:22px;margin:0;letter-spacing:.2px;}
+    .hint{color:var(--muted);font-size:13px;margin:0;}
+    .card{background:var(--card);border:1px solid var(--grid);border-radius:16px;padding:12px;
+      box-shadow:0 10px 26px rgba(0,0,0,.35);}
+    .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 12px;}
+    button{cursor:pointer;border:1px solid var(--grid);background:rgba(255,255,255,.06);color:var(--text);
+      padding:9px 11px;border-radius:12px;font-weight:850;font-size:14px;}
+    button:hover{background:rgba(255,255,255,.10);}
+    button.danger{border-color:rgba(255,107,107,.35);background:rgba(255,107,107,.10);}
+    button.danger:hover{background:rgba(255,107,107,.16);}
+    .note{color:var(--muted);font-size:12px;margin:0;}
+
+    .badge{display:inline-flex;align-items:center;justify-content:center;padding:2px 8px;border-radius:999px;
+      font-weight:950;font-size:12px;line-height:1.4;letter-spacing:.2px;border:1px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.06);color:var(--text);vertical-align:middle;}
+    .badge.p13{background:rgba(47,128,237,.18);border-color:rgba(47,128,237,.35);}
+    .badge.p14{background:rgba(235,87,87,.18);border-color:rgba(235,87,87,.35);}
+    .badge.m1{background:rgba(242,201,76,.18);border-color:rgba(242,201,76,.35);}
+    .badge.m2{background:rgba(189,189,189,.18);border-color:rgba(189,189,189,.35);}
+
+    .fieldMark{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:26px;
+      height:24px;
+      padding:0 6px;
+      border-radius:8px;
+      font-size:13px;
+      font-weight:900;
+      margin-left:8px;
+      background:rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.35);
+      letter-spacing:.5px;
+    }
+    .dateMark{
+      display:inline-block;font-size:11px;font-weight:800;color:var(--muted);
+      margin-right:6px;min-width:0;text-align:right;
+    }
+
+    .mark{display:inline-flex;align-items:center;gap:10px;margin-right:12px;white-space:normal;flex-wrap:wrap;}
+    .mark .sym{font-size:18px;line-height:1;}
+    .mark.compact{margin-right:0;gap:6px;}
+    .mark.compact .badge{font-size:11px;padding:2px 7px;}
+
+    .tableWrap{overflow-x:hidden;overflow-y:visible;border-radius:12px;}
+    table{border-collapse:separate;border-spacing:0;width:100%;min-width:0;table-layout:fixed;font-size:16px;}
+    th,td{border-right:1px solid var(--grid);border-bottom:1px solid var(--grid);padding:10px 8px;text-align:center;
+      vertical-align:middle;background:rgba(18,18,26,.7);}
+    thead th{position:sticky;top:0;z-index:3;background:rgba(18,18,26,.98);font-weight:900;}
+    th.weekH, td.week{position:sticky;left:0;z-index:2;text-align:right;padding-right:12px;font-weight:900;
+      background:rgba(18,18,26,.98);min-width:90px;cursor:pointer;}
+    thead th.weekH{z-index:4;}
+    tr td:last-child, tr th:last-child{border-right:0;}
+    tbody tr:last-child td{border-bottom:0;}
+    td.cell{cursor:pointer;white-space:normal;padding:14px 12px;vertical-align:top;}
+    td.cell:hover, td.week:hover{outline:2px solid rgba(122,167,255,.22);outline-offset:-2px;}
+    td.cell .mark{display:flex;align-items:center;justify-content:flex-start;margin:0 0 6px 0;gap:6px;}
+    td.cell .mark:last-child{margin-bottom:0;}
+    tbody tr{min-height:88px;}
+
+    .legend{display:flex;flex-wrap:wrap;gap:10px 12px;margin-top:12px;color:var(--muted);font-size:13px;}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border:1px solid var(--grid);
+      border-radius:999px;background:rgba(255,255,255,.03);color:var(--text);}
+    .swatch{width:14px;height:14px;border-radius:4px;border:1px solid rgba(255,255,255,.25);}
+    .swatch.blue{background:#2F80ED;} .swatch.red{background:#EB5757;}
+    .swatch.yellow{background:#F2C94C;} .swatch.grey{background:#BDBDBD;}
+
+    dialog{border:1px solid var(--grid);border-radius:16px;background:rgba(18,18,26,.98);color:var(--text);
+      padding:0;max-width:1020px;width:94vw;box-shadow:0 20px 60px rgba(0,0,0,.6);}
+    dialog::backdrop{background:rgba(0,0,0,.55);}
+    .modalHead{padding:14px 14px 10px;border-bottom:1px solid var(--grid);display:flex;justify-content:space-between;
+      gap:10px;align-items:flex-start;}
+    .modalTitle{font-weight:950;font-size:16px;margin:0;}
+    .modalSub{margin:4px 0 0;color:var(--muted);font-size:13px;}
+    .modalBody{padding:12px 14px 14px;}
+    .modalGrid{display:grid;grid-template-columns:1fr;gap:12px;}
+    @media (min-width: 920px){.modalGrid{grid-template-columns:1.1fr 1fr;}}
+    .panel{border:1px solid var(--grid);border-radius:16px;padding:12px;background:rgba(255,255,255,.03);}
+    .panel h3{margin:0 0 8px;font-size:14px;font-weight:950;letter-spacing:.2px;}
+    .panel .sub{margin:0 0 10px;color:var(--muted);font-size:12px;}
+    .chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 10px;}
+    .chip{border:1px solid var(--grid);background:rgba(255,255,255,.04);color:var(--text);padding:8px 10px;
+      border-radius:999px;font-weight:900;font-size:12px;cursor:pointer;}
+    .chip:hover{background:rgba(255,255,255,.07);}
+    .chip.active{border-color:rgba(122,167,255,.65);background:rgba(122,167,255,.16);}
+    .list{display:flex;flex-direction:column;gap:10px;max-height:56vh;overflow:auto;padding-right:4px;}
+    .group{border:1px solid var(--grid);border-radius:14px;padding:10px;background:rgba(18,18,26,.55);}
+    .groupTitle{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px;font-weight:950;}
+    .groupTitle span{color:var(--muted);font-weight:800;font-size:12px;}
+    .row{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:8px 10px;border:1px solid var(--grid);
+      border-radius:12px;background:rgba(255,255,255,.03);margin-top:6px;}
+    .left{display:flex;gap:10px;align-items:flex-start;}
+    .symBig{font-size:20px;line-height:1;}
+    .txt{font-size:13px;}
+    .txt b{font-weight:950;}
+    .meta{color:var(--muted);font-size:12px;margin-top:2px;}
+    .moveBar{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;}
+    .moveBar button{padding:7px 9px;font-size:12px;border-radius:10px;}
+    @media (min-width: 820px){body{padding:24px;} h1{font-size:28px;}}
+  
+    /* ===== Print to PDF ===== */
+    @media print{
+      @page{ size: landscape; margin: 10mm; }
+      body{ padding:0; background:#000 !important; color:#fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .wrap{ max-width: none; }
+      .toolbar{ display:none !important; }
+      /* show everything on one printable canvas; avoid cut-offs */
+      .card{ box-shadow:none !important; }
+      .tableWrap{ overflow: visible !important; }
+      table{ min-width: 0 !important; width: 100% !important; }
+      thead th{ position: static !important; }
+      th.weekH, td.week{ position: static !important; }
+      dialog{ display:none !important; }
+    }
+
+  
+    /* ===== Responsive: fit all columns without horizontal scroll ===== */
+    th,td{word-break:break-word;}
+    td.cell .mark{align-items:flex-start;}
+    @media (max-width: 980px){
+      table{font-size:14px;}
+      th,td{padding:9px 6px;}
+      th.weekH, td.week{min-width:70px;padding-right:10px;}
+      .badge{font-size:11px;padding:2px 7px;}
+      .mark .sym{font-size:16px;}
+      .dateMark{font-size:10px;}
+      .fieldMark{min-width:22px;height:22px;font-size:12px;margin-left:6px;}
+      /* disable sticky for print-like fit */
+      thead th{position:static;}
+      th.weekH, td.week{position:static;}
+    }
+    @media (max-width: 560px){
+      table{font-size:13px;}
+      th,td{padding:8px 5px;}
+      .mark{gap:8px;margin-right:10px;}
+    }
+
+  
+    /* ===== Counts bar ===== */
+    .countsBar{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+      margin:10px 0 14px;
+    }
+    .countPill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.05);
+      font-weight:950;
+      font-size:13px;
+      color:var(--text);
+      white-space:nowrap;
+    }
+    .countPill .muted{color:var(--muted); font-weight:850;}
+    .countDot{
+      width:10px;height:10px;border-radius:999px;display:inline-block;
+      box-shadow:0 0 0 2px rgba(0,0,0,.35) inset;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Pelien asettelu 2026</h1>
+      <p class="hint">Klikkaa viikkoa → siirrä pelit <b>Asettelematta</b> → Ma–Su. Kotipeleille voit valita kentän <b>J</b> (Joutsa) tai <b>K</b> (Kangasniemi). Tulostus: <b>Print as PDF</b>.</p>
+    </header>
+
+    <div class="toolbar">
+      <button onclick="exportAssignments()">Export Assignments</button>
+      <button onclick="printPDF()">Print as PDF</button>
+      <button onclick="downloadProject()">Tallenna projekti</button>
+      <button onclick="openProjectPicker()">Avaa projekti</button>
+      <input id="projectFile" type="file" accept="application/json" style="display:none" />
+      <button onclick="resetToDefaults()">Palauta oletus (Excel)</button>
+      <button class="danger" onclick="clearAssignments()">Tyhjennä asettelut</button>
+      <p class="note" id="status"></p>
+    </div>
+
+    
+      <div class="tableWrap">
+        <table aria-label="Sarjataulukko 2026">
+          <colgroup>
+            <col style="width:8%" />
+            <col style="width:11%" />
+            <col style="width:11%" />
+            <col style="width:11%" />
+            <col style="width:11%" />
+            <col style="width:11%" />
+            <col style="width:11%" />
+            <col style="width:11%" />
+            <col style="width:15%" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="weekH">Viikko</th>
+              <th>Ma</th><th>Ti</th><th>Ke</th><th>To</th><th>Pe</th><th>La</th><th>Su</th>
+              <th>Asettelematta</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="legend">
+        <span class="pill"><span class="swatch blue"></span> <span class="badge p13">P13</span></span>
+        <span class="pill"><span class="swatch red"></span> <span class="badge p14">P14</span></span>
+        <span class="pill"><span class="swatch yellow"></span> <span class="badge m1">M1</span> KaPaJoSePa</span>
+        <span class="pill"><span class="swatch grey"></span> <span class="badge m2">M2</span> KaPaJoSePa2</span>
+        <span class="pill">■ = kotipeli</span>
+        <span class="pill">● = vieraspeli</span>
+        <span class="pill"><span class="fieldMark">J</span> / <span class="fieldMark">K</span> kenttä</span>
+        <span class="pill">Pvm näkyy pelin edessä (esim. 7.5).</span>
+      </div>
+    </div>
+  </div>
+
+  <dialog id="weekDlg">
+    <div class="modalHead">
+      <div>
+        <p class="modalTitle" id="dlgTitle">Viikko</p>
+        <p class="modalSub" id="dlgSub">—</p>
+      </div>
+      <button onclick="closeWeek()">Sulje</button>
+    </div>
+    <div class="modalBody">
+      <div class="modalGrid">
+        <div class="panel">
+          <h3>Asettelematta</h3>
+          <p class="sub">Vastustajat ovat valmiina taustadatassa. Siirrä peli päivälle.</p>
+          <div class="chips" id="filterChips"></div>
+          <div class="list" id="unscheduledList"></div>
+        </div>
+
+        <div class="panel">
+          <h3>Asetellut tällä viikolla</h3>
+          <p class="sub">Päiväotsikoissa näkyy myös päivämäärä.</p>
+          <div class="list" id="scheduledList"></div>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    const DAYS = ["Ma","Ti","Ke","To","Pe","La","Su"];
+    const TABLE_DAYS = [...DAYS, "Asettelematta"];
+
+    const TEAMS = {
+      P13:  { label:"P13",         badge:"P13", badgeCls:"p13", square:"🟦", circle:"🔵" },
+      P14:  { label:"P14",         badge:"P14", badgeCls:"p14", square:"🟥", circle:"🔴" },
+      KJS:  { label:"KaPaJoSePa",  badge:"M1",  badgeCls:"m1",  square:"🟨", circle:"🟡" },
+      KJS2: { label:"KaPaJoSePa2", badge:"M2",  badgeCls:"m2",  square:"⬜", circle:"⚪" },
+    };
+
+    const FIXTURES = [{"id": "P14_w17_0", "week": 17, "team": "P14", "ha": "away", "opponent": "MuurY", "date": "", "time": ""}, {"id": "KJS2_w18_1", "week": 18, "team": "KJS2", "ha": "home", "opponent": "HaKoPo", "date": "", "time": ""}, {"id": "P14_w18_2", "week": 18, "team": "P14", "ha": "home", "opponent": "Team LKP", "date": "", "time": ""}, {"id": "KJS_w19_3", "week": 19, "team": "KJS", "ha": "away", "opponent": "OViesti", "date": "2026-05-07", "time": "19:00"}, {"id": "KJS2_w19_4", "week": 19, "team": "KJS2", "ha": "away", "opponent": "Harjun Potku", "date": "", "time": ""}, {"id": "P13_w19_5", "week": 19, "team": "P13", "ha": "away", "opponent": "SaPa", "date": "", "time": ""}, {"id": "P14_w19_6", "week": 19, "team": "P14", "ha": "away", "opponent": "JIlves", "date": "", "time": ""}, {"id": "KJS_w20_7", "week": 20, "team": "KJS", "ha": "home", "opponent": "Komeetat/Piuku", "date": "2026-05-15", "time": "19:00"}, {"id": "KJS2_w20_8", "week": 20, "team": "KJS2", "ha": "home", "opponent": "FC Soho/Orit", "date": "", "time": ""}, {"id": "P13_w20_9", "week": 20, "team": "P13", "ha": "home", "opponent": "Team LKP/Vihreä", "date": "", "time": ""}, {"id": "P14_w20_10", "week": 20, "team": "P14", "ha": "home", "opponent": "FCS", "date": "", "time": ""}, {"id": "KJS_w21_11", "week": 21, "team": "KJS", "ha": "away", "opponent": "Nousu", "date": "2026-05-21", "time": "20:00"}, {"id": "KJS2_w21_12", "week": 21, "team": "KJS2", "ha": "away", "opponent": "FCV/Reds II", "date": "", "time": ""}, {"id": "P13_w21_13", "week": 21, "team": "P13", "ha": "home", "opponent": "Huima/Sininen", "date": "", "time": ""}, {"id": "P14_w21_14", "week": 21, "team": "P14", "ha": "away", "opponent": "KeuPa", "date": "", "time": ""}, {"id": "KJS_w22_15", "week": 22, "team": "KJS", "ha": "home", "opponent": "FC Soho", "date": "2026-05-27", "time": "19:00"}, {"id": "KJS2_w22_16", "week": 22, "team": "KJS2", "ha": "home", "opponent": "Nousu/2", "date": "", "time": ""}, {"id": "P13_w22_17", "week": 22, "team": "P13", "ha": "away", "opponent": "FCV/White", "date": "", "time": ""}, {"id": "P14_w22_18", "week": 22, "team": "P14", "ha": "home", "opponent": "JJK YJ/3", "date": "", "time": ""}, {"id": "KJS_w23_19", "week": 23, "team": "KJS", "ha": "away", "opponent": "Huima/Urho 2", "date": "2026-06-05", "time": "19:30"}, {"id": "KJS2_w23_20", "week": 23, "team": "KJS2", "ha": "away", "opponent": "Souls AC", "date": "", "time": ""}, {"id": "P13_w23_21", "week": 23, "team": "P13", "ha": "home", "opponent": "PaRi/valkoinen", "date": "", "time": ""}, {"id": "P14_w23_22", "week": 23, "team": "P14", "ha": "home", "opponent": "Huima", "date": "", "time": ""}, {"id": "KJS_w24_23", "week": 24, "team": "KJS", "ha": "home", "opponent": "JIlves", "date": "2026-06-10", "time": "19:00"}, {"id": "KJS2_w24_24", "week": 24, "team": "KJS2", "ha": "home", "opponent": "FCS", "date": "", "time": ""}, {"id": "P13_w24_25", "week": 24, "team": "P13", "ha": "away", "opponent": "FCV-14", "date": "", "time": ""}, {"id": "P14_w24_26", "week": 24, "team": "P14", "ha": "away", "opponent": "FC Blackbird/Black", "date": "", "time": ""}, {"id": "KJS_w25_27", "week": 25, "team": "KJS", "ha": "away", "opponent": "FCV/Reds", "date": "2026-06-17", "time": "20:00"}, {"id": "KJS2_w25_28", "week": 25, "team": "KJS2", "ha": "away", "opponent": "Möyhyn Pallo", "date": "", "time": ""}, {"id": "P13_w25_29", "week": 25, "team": "P13", "ha": "home", "opponent": "Komeetat/Merkurius", "date": "", "time": ""}, {"id": "P14_w25_30", "week": 25, "team": "P14", "ha": "home", "opponent": "PaRi/Musta", "date": "", "time": ""}, {"id": "KJS_w26_31", "week": 26, "team": "KJS", "ha": "home", "opponent": "LPK", "date": "2026-06-24", "time": "19:00"}, {"id": "KJS2_w26_32", "week": 26, "team": "KJS2", "ha": "home", "opponent": "JIlves/Oranssi", "date": "", "time": ""}, {"id": "P14_w26_33", "week": 26, "team": "P14", "ha": "away", "opponent": "FCV/Red", "date": "", "time": ""}, {"id": "KJS_w27_34", "week": 27, "team": "KJS", "ha": "home", "opponent": "FC Marski", "date": "2026-07-01", "time": "19:00"}, {"id": "P14_w27_35", "week": 27, "team": "P14", "ha": "home", "opponent": "Komeetat/Mars", "date": "", "time": ""}, {"id": "KJS_w30_36", "week": 30, "team": "KJS", "ha": "home", "opponent": "OViesti", "date": "2026-07-22", "time": "19:00"}, {"id": "KJS2_w30_37", "week": 30, "team": "KJS2", "ha": "away", "opponent": "Pieksämäki United", "date": "", "time": ""}, {"id": "KJS2_w31_38", "week": 31, "team": "KJS2", "ha": "home", "opponent": "LPK/Akatemia", "date": "", "time": ""}, {"id": "KJS_w32_39", "week": 32, "team": "KJS", "ha": "home", "opponent": "Nousu", "date": "2026-08-05", "time": "19:00"}, {"id": "KJS2_w32_40", "week": 32, "team": "KJS2", "ha": "away", "opponent": "Rangers/2", "date": "", "time": ""}, {"id": "KJS_w33_41", "week": 33, "team": "KJS", "ha": "away", "opponent": "FC Soho", "date": "2026-08-12", "time": "20:00"}, {"id": "KJS2_w33_42", "week": 33, "team": "KJS2", "ha": "home", "opponent": "FC Papa", "date": "", "time": ""}, {"id": "KJS_w34_43", "week": 34, "team": "KJS", "ha": "home", "opponent": "Huima/Urho 2", "date": "2026-08-19", "time": "18:30"}, {"id": "KJS2_w34_44", "week": 34, "team": "KJS2", "ha": "away", "opponent": "MJK", "date": "", "time": ""}, {"id": "KJS_w35_45", "week": 35, "team": "KJS", "ha": "away", "opponent": "JIlves", "date": "2026-08-27", "time": "18:00"}, {"id": "KJS2_w35_46", "week": 36, "team": "KJS2", "ha": "away", "opponent": "FC Nopeet", "date": "", "time": ""}, {"id": "KJS_w36_47", "week": 36, "team": "KJS", "ha": "home", "opponent": "FCV/Reds", "date": "2026-09-02", "time": "18:30"}, {"id": "KJS2_w36_48", "week": 37, "team": "KJS2", "ha": "home", "opponent": "ViPa", "date": "", "time": ""}, {"id": "KJS_w37_49", "week": 37, "team": "KJS", "ha": "away", "opponent": "LPK", "date": "", "time": ""}, {"id": "KJS2_w37_50", "week": 38, "team": "KJS2", "ha": "away", "opponent": "Jyväskylä United", "date": "", "time": ""}, {"id": "KJS_w38_51", "week": 38, "team": "KJS", "ha": "away", "opponent": "FC Marski", "date": "", "time": ""}];
+    const DEFAULT_FIELDS = {"P14_w17_0": "", "KJS2_w18_1": "J", "P14_w18_2": "J", "KJS_w19_3": "", "KJS2_w19_4": "", "P13_w19_5": "", "P14_w19_6": "", "KJS_w20_7": "J", "KJS2_w20_8": "J", "P13_w20_9": "J", "P14_w20_10": "J", "KJS_w21_11": "", "KJS2_w21_12": "", "P13_w21_13": "J", "P14_w21_14": "", "KJS_w22_15": "J", "KJS2_w22_16": "J", "P13_w22_17": "", "P14_w22_18": "J", "KJS_w23_19": "", "KJS2_w23_20": "", "P13_w23_21": "K", "P14_w23_22": "J", "KJS_w24_23": "J", "KJS2_w24_24": "K", "P13_w24_25": "", "P14_w24_26": "", "KJS_w25_27": "", "KJS2_w25_28": "", "P13_w25_29": "K", "P14_w25_30": "K", "KJS_w26_31": "K", "KJS2_w26_32": "K", "P14_w26_33": "", "KJS_w27_34": "K", "P14_w27_35": "K", "KJS_w30_36": "K", "KJS2_w30_37": "", "KJS2_w31_38": "K", "KJS_w32_39": "K", "KJS2_w32_40": "", "KJS_w33_41": "", "KJS2_w33_42": "J", "KJS_w34_43": "K", "KJS2_w34_44": "", "KJS_w35_45": "", "KJS2_w35_46": "", "KJS_w36_47": "J", "KJS2_w36_48": "J", "KJS_w37_49": "", "KJS2_w37_50": "", "KJS_w38_51": ""};
+    const DEFAULT_DAYS = {"P14_w17_0": "Asettelematta", "KJS2_w18_1": "Ma", "P14_w18_2": "Ke", "KJS_w19_3": "To", "KJS2_w19_4": "Asettelematta", "P13_w19_5": "Asettelematta", "P14_w19_6": "Asettelematta", "KJS_w20_7": "Pe", "KJS2_w20_8": "Ma", "P13_w20_9": "Ke", "P14_w20_10": "To", "KJS_w21_11": "To", "KJS2_w21_12": "Asettelematta", "P13_w21_13": "Pe", "P14_w21_14": "Asettelematta", "KJS_w22_15": "Ke", "KJS2_w22_16": "Ma", "P13_w22_17": "Asettelematta", "P14_w22_18": "To", "KJS_w23_19": "Pe", "KJS2_w23_20": "Asettelematta", "P13_w23_21": "Ke", "P14_w23_22": "To", "KJS_w24_23": "Ke", "KJS2_w24_24": "Ma", "P13_w24_25": "Asettelematta", "P14_w24_26": "Asettelematta", "KJS_w25_27": "Ke", "KJS2_w25_28": "Asettelematta", "P13_w25_29": "Ke", "P14_w25_30": "Ke", "KJS_w26_31": "Ke", "KJS2_w26_32": "Ma", "P14_w26_33": "Asettelematta", "KJS_w27_34": "Ke", "P14_w27_35": "To", "KJS_w30_36": "Ke", "KJS2_w30_37": "Asettelematta", "KJS2_w31_38": "Ma", "KJS_w32_39": "Ke", "KJS2_w32_40": "Asettelematta", "KJS_w33_41": "Ke", "KJS2_w33_42": "Ma", "KJS_w34_43": "Ke", "KJS2_w34_44": "Asettelematta", "KJS_w35_45": "To", "KJS2_w35_46": "Asettelematta", "KJS_w36_47": "Ke", "KJS2_w36_48": "Ma", "KJS_w37_49": "Asettelematta", "KJS2_w37_50": "Asettelematta", "KJS_w38_51": "Asettelematta"};
+
+    // assignments: { id: { day: "Ma"|...|"Asettelematta", field: ""|"J"|"K" } }
+    const ASSIGN_KEY = "assignments_2026_v3";
+
+    function ensureV3(obj){
+      const out = {};
+      for(const fx of FIXTURES){
+        const v = obj && obj[fx.id];
+        if(typeof v === "string") out[fx.id] = {day:v, field:""};
+        else if(v && typeof v === "object") out[fx.id] = {day: v.day || "Asettelematta", field: v.field || ""};
+        else out[fx.id] = {day: (DEFAULT_DAYS[fx.id] || "Asettelematta"), field:""};
+      }
+      return out;
+    }
+
+    function setStatus(msg){
+      const el = document.getElementById("status");
+      el.textContent = msg;
+      clearTimeout(window.__st);
+      window.__st = setTimeout(()=> el.textContent="", 2200);
+    }
+
+    function loadAssignments(){
+      try{
+        const raw = localStorage.getItem(ASSIGN_KEY);
+        if(!raw) return ensureV3(null);
+        return ensureV3(JSON.parse(raw));
+      }catch(e){
+        return ensureV3(null);
+      }
+      updateCountsBar();
+    }
+    function saveAssignments(){ localStorage.setItem(ASSIGN_KEY, JSON.stringify(assignments)); }
+
+    let assignments = loadAssignments();
+
+    function resetToDefaults(){
+      if(!confirm("Palautetaanko asettelut Excel-oletuksiin?")) return;
+      assignments = ensureV3({});
+      saveAssignments();
+      renderTable();
+      setStatus("Palautettu ✅");
+    }
+
+    function clearAssignments(){
+      if(!confirm("Tyhjennetäänkö kaikki asettelut (kaikki Asettelematta)?")) return;
+      const next = {};
+      for(const fx of FIXTURES) next[fx.id] = {day:(DEFAULT_DAYS[fx.id]||"Asettelematta"), field:(DEFAULT_FIELDS[fx.id]||"")};
+      assignments = next;
+      saveAssignments();
+      renderTable();
+      setStatus("Tyhjennetty ✅");
+    }
+
+
+    
+    function printPDF(){
+      // Use browser print dialog -> Save as PDF
+      window.print();
+    }
+
+    function sanitizeAssignments(obj){
+      // Accept either {a:...} wrapper or direct object
+      const base = (obj && obj.a && typeof obj.a === "object") ? obj.a : obj;
+      const next = {};
+      for(const fx of FIXTURES){
+        const v = base && base[fx.id];
+        if(typeof v === "string"){
+          next[fx.id] = {day:v, field:""};
+        }else if(v && typeof v === "object"){
+          next[fx.id] = {day: v.day || "Asettelematta", field: v.field || ""};
+        }else{
+          next[fx.id] = {day: (DEFAULT_DAYS[fx.id] || "Asettelematta"), field:""};
+        }
+        if(next[fx.id].field !== "J" && next[fx.id].field !== "K") next[fx.id].field = "";
+        const d = next[fx.id].day;
+        const ok = (d === "Asettelematta") || DAYS.includes(d);
+        if(!ok) next[fx.id].day = "Asettelematta";
+      }
+      return next;
+    }
+
+    function downloadProject(){
+      try{
+        const payload = JSON.stringify({
+          version: 1,
+          createdAt: new Date().toISOString(),
+          a: assignments
+        }, null, 2);
+        const blob = new Blob([payload], {type:"application/json"});
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "peliasettelu_2026.json";
+        a.click();
+        URL.revokeObjectURL(a.href);
+        setStatus("Projekti ladattu ✅");
+      }catch(e){
+        alert("Projektin tallennus epäonnistui");
+      }
+    }
+
+    function openProjectPicker(){
+      const input = document.getElementById("projectFile");
+      if(!input){ alert("Tiedostovalitsin puuttuu"); return; }
+      input.value = "";
+      input.click();
+    }
+
+    function wireProjectInput(){
+      const input = document.getElementById("projectFile");
+      if(!input) return;
+      input.addEventListener("change", (ev)=>{
+        const file = ev.target.files && ev.target.files[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = ()=>{
+          try{
+            const obj = JSON.parse(reader.result);
+            assignments = sanitizeAssignments(obj);
+            saveAssignments();
+            renderTable();
+            setStatus("Projekti avattu ✅");
+          }catch(e){
+            alert("Tiedosto ei ollut kelvollinen JSON");
+          }
+        };
+        reader.readAsText(file, "utf-8");
+      });
+    }
+
+
+    function exportAssignments(){
+      const payload = JSON.stringify({a:assignments}, null, 2);
+      navigator.clipboard?.writeText(payload).then(()=> setStatus("Export kopioitu ✅"))
+      .catch(()=>{
+        const blob = new Blob([payload], {type:"application/json"});
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "assignments_2026.json";
+        a.click();
+        URL.revokeObjectURL(a.href);
+        setStatus("Export ladattu ✅");
+      });
+    }
+
+    function badgeHTML(team){
+      const t = TEAMS[team];
+      return `<span class="badge ${t.badgeCls}">${t.badge}</span>`;
+    }
+    function symbolOnly(fx){
+      const t = TEAMS[fx.team];
+      return fx.ha === "home" ? t.square : t.circle;
+    }
+
+    // ISO week -> date
+    function isoWeekDate(year, week, weekday){
+      const simple = new Date(Date.UTC(year, 0, 4));
+      const dayOfWeek = simple.getUTCDay() || 7;
+      const isoWeek1Mon = new Date(simple);
+      isoWeek1Mon.setUTCDate(simple.getUTCDate() - (dayOfWeek - 1));
+      const d = new Date(isoWeek1Mon);
+      d.setUTCDate(isoWeek1Mon.getUTCDate() + (week - 1) * 7 + (weekday - 1));
+      return d;
+    }
+    function fmtDmy(d){ return `${d.getUTCDate()}.${d.getUTCMonth()+1}`; }
+    function weekRangeLabel(week){
+      const mon = isoWeekDate(2026, week, 1);
+      const sun = isoWeekDate(2026, week, 7);
+      return `${fmtDmy(mon)}–${fmtDmy(sun)} (2026)`;
+    }
+    function fixtureDateLabel(week, assignedDay){
+      if(!assignedDay || assignedDay==="Asettelematta") return "";
+      const idx = DAYS.indexOf(assignedDay);
+      if(idx<0) return "";
+      const d = isoWeekDate(2026, week, idx+1);
+      return `${assignedDay} ${fmtDmy(d)}`;
+    }
+
+    function dayLabelWithDate(week, day){
+      if(day === "Asettelematta") return "Asettelematta";
+      const idx = DAYS.indexOf(day);
+      const d = isoWeekDate(2026, week, idx+1);
+      return `${day} (${fmtDmy(d)})`;
+    }
+
+    function markHTML(fx, compact=false, week=null, day=null){
+      const fld = assignments[fx.id]?.field ? `<span class="fieldMark">${assignments[fx.id].field}</span>` : "";
+      let dateStr = "";
+      if(week && day && day !== "Asettelematta"){
+        const idx = DAYS.indexOf(day);
+        if(idx >= 0){
+          const d = isoWeekDate(2026, week, idx+1);
+          dateStr = `<span class="dateMark">${fmtDmy(d)}</span>`;
+        }
+      }
+      return `<span class="mark ${compact ? "compact":""}">${dateStr}<span class="sym">${symbolOnly(fx)}</span>${badgeHTML(fx.team)}${fld}</span>`;
+    }
+
+    function allWeeks(){
+      const set = new Set(FIXTURES.map(f => Number(f.week)).filter(Boolean));
+      return [...set].sort((a,b)=>a-b);
+    }
+    function fixturesForWeek(week){
+      return FIXTURES.filter(f => Number(f.week) === Number(week));
+    }
+
+    function updateCountsBar(){
+      const el = document.getElementById('countsBar');
+      if(!el) return;
+      // Count fixtures per team + home/away split
+      const counts = {P13:{t:0,h:0,a:0}, P14:{t:0,h:0,a:0}, M1:{t:0,h:0,a:0}, M2:{t:0,h:0,a:0}};
+      for(const f of FIXTURES){
+        if(!counts[f.team]) continue;
+        counts[f.team].t += 1;
+        if(f.ha === 'home') counts[f.team].h += 1;
+        else counts[f.team].a += 1;
+      }
+      const color = {P13:'var(--p13)', P14:'var(--p14)', M1:'var(--m1)', M2:'var(--m2)'};
+      const label = {P13:'P13', P14:'P14', M1:'M1', M2:'M2'};
+      el.innerHTML = Object.keys(counts).map(k=>{
+        const c = counts[k];
+        return `<span class="countPill">
+          <span class="countDot" style="background:${color[k]}"></span>
+          <span>${label[k]}</span>
+          <span class="muted">${c.t} peliä</span>
+          <span class="muted">(${c.h} koti / ${c.a} vieras)</span>
+        </span>`;
+      }).join('');
+    }
+
+    function renderTable(){
+      const tb = document.getElementById("tableBody");
+      tb.innerHTML = "";
+      for(const week of allWeeks()){
+        const tr = document.createElement("tr");
+        const tdW = document.createElement("td");
+        tdW.className = "week";
+        tdW.textContent = week;
+        tdW.addEventListener("click", ()=> openWeek(week));
+        tr.appendChild(tdW);
+
+        for(const day of TABLE_DAYS){
+          const td = document.createElement("td");
+          td.className = "cell";
+          td.addEventListener("click", ()=> openWeek(week));
+          const fx = fixturesForWeek(week);
+          const here = fx.filter(f => (assignments[f.id]?.day || "Asettelematta") === day);
+          td.innerHTML = here.map(f => markHTML(f, true, week, day)).join("");
+          tr.appendChild(td);
+        }
+        tb.appendChild(tr);
+      }
+    }
+
+    // modal
+    const weekDlg = document.getElementById("weekDlg");
+    const unscheduledList = document.getElementById("unscheduledList");
+    const scheduledList = document.getElementById("scheduledList");
+    const filterChips = document.getElementById("filterChips");
+    let currentWeek = null;
+    let teamFilter = "ALL";
+
+    function openWeek(week){
+      currentWeek = week;
+      document.getElementById("dlgTitle").textContent = `Viikko ${week} • ${weekRangeLabel(week)}`;
+      document.getElementById("dlgSub").textContent = `${fixturesForWeek(week).length} peliä`;
+      teamFilter = "ALL";
+      renderFilters();
+      renderWeekLists();
+      weekDlg.showModal();
+    }
+    function closeWeek(){ weekDlg.close(); currentWeek=null; }
+
+    function renderFilters(){
+      filterChips.innerHTML = "";
+      const opts = ["ALL","P13","P14","KJS","KJS2"];
+      for(const o of opts){
+        const b = document.createElement("button");
+        b.type="button";
+        b.className = "chip" + (o===teamFilter ? " active":"");
+        b.innerHTML = (o==="ALL") ? "Kaikki" : `${badgeHTML(o)} ${TEAMS[o].label}`;
+        b.addEventListener("click", ()=>{ teamFilter=o; renderFilters(); renderWeekLists(); });
+        filterChips.appendChild(b);
+      }
+    }
+
+    function haText(ha){ return ha === "home" ? "Kotipeli" : "Vieraspeli"; }
+    function escapeHTML(s){
+      return (s||"").toString().replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+    }
+
+    function renderWeekLists(){
+      const fxAll = fixturesForWeek(currentWeek);
+      const fx = (teamFilter==="ALL") ? fxAll : fxAll.filter(f => f.team === teamFilter);
+
+      const uns = fx.filter(f => (assignments[f.id]?.day || "Asettelematta") === "Asettelematta");
+      const sch = fx.filter(f => (assignments[f.id]?.day || "Asettelematta") !== "Asettelematta");
+
+      unscheduledList.innerHTML = "";
+      scheduledList.innerHTML = "";
+
+      unscheduledList.appendChild(groupBlock("Asettelematta", "Asettelematta", uns, true));
+      for(const d of DAYS){
+        const g = sch.filter(f => (assignments[f.id]?.day || "Asettelematta") === d);
+        scheduledList.appendChild(groupBlock(d, dayLabelWithDate(currentWeek, d), g, false));
+      }
+    }
+
+    function groupBlock(dayKey, title, items, fromUnscheduled){
+      const box = document.createElement("div"); box.className = "group";
+      const head = document.createElement("div"); head.className = "groupTitle";
+      head.innerHTML = `<div>${title}</div><span>${items.length} peliä</span>`;
+      box.appendChild(head);
+
+      if(items.length === 0){
+        const none = document.createElement("div"); none.className = "note"; none.textContent = "Ei pelejä";
+        box.appendChild(none); return box;
+      }
+
+      for(const f of items){
+        const row = document.createElement("div"); row.className = "row";
+        const left = document.createElement("div"); left.className = "left";
+        const fld = assignments[f.id]?.field ? ` • kenttä ${assignments[f.id].field}` : "";
+        const dateLbl = fixtureDateLabel(currentWeek, (assignments[f.id]?.day || "Asettelematta"));
+        const datePart = dateLbl ? ` • ${dateLbl}` : "";
+        left.innerHTML = `
+          <div class="symBig">${symbolOnly(f)}</div>
+          <div class="txt">
+            <b>${TEAMS[f.team].label}</b> ${badgeHTML(f.team)}
+            <div class="meta">${haText(f.ha)}${datePart} • vs ${escapeHTML(f.opponent || "")}${f.time ? " • " + escapeHTML(f.time) : ""}${fld}</div>
+          </div>
+        `;
+
+        const right = document.createElement("div"); right.className = "moveBar";
+        const targets = fromUnscheduled ? DAYS : ["Asettelematta", ...DAYS];
+
+        for(const t of targets){
+          if((assignments[f.id]?.day || "Asettelematta") === t) continue;
+          const b = document.createElement("button"); b.type="button";
+          b.textContent = (t==="Asettelematta") ? "Asettelematta" : dayLabelWithDate(currentWeek, t);
+          b.addEventListener("click", ()=>{
+            assignments[f.id] = assignments[f.id] || {day:"Asettelematta",field:""};
+            assignments[f.id].day = t;
+            if(t==="Asettelematta") assignments[f.id].field = "";
+            saveAssignments();
+            renderTable();
+            renderWeekLists();
+            setStatus("Aseteltu ✅");
+          });
+          right.appendChild(b);
+        }
+
+        if(f.ha==="home"){
+          ["J","K"].forEach(code=>{
+            const fb = document.createElement("button");
+            fb.type="button";
+            fb.textContent = code;
+            fb.title = code==="J" ? "Joutsa" : "Kangasniemi";
+            fb.addEventListener("click", ()=>{
+              assignments[f.id] = assignments[f.id] || {day:"Asettelematta",field:""};
+              // field can be chosen even before assigning a weekday
+              assignments[f.id].field = code;
+              saveAssignments();
+              renderTable();
+              renderWeekLists();
+              setStatus("Kenttä tallennettu ✅");
+            });
+            right.appendChild(fb);
+          });
+        }
+
+        row.appendChild(left); row.appendChild(right);
+        box.appendChild(row);
+      }
+      return box;
+    }
+
+    // boot
+    renderTable();
+    wireProjectInput();
+    setStatus((typeof _fromURL!=="undefined" && _fromURL) ? "Ladattu jakolinkistä ✅" : "Ladattu ✅");
+  
+    // ===== Share link (URL data) =====
+    function _b64urlEncode(str){
+      return btoa(str).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+    }
+    function _b64urlDecode(tok){
+      let s = tok.replace(/-/g,'+').replace(/_/g,'/');
+      while(s.length % 4) s += '=';
+      return atob(s);
+    }
+    function makeShareToken(payload){
+      const json = JSON.stringify(payload);
+      return _b64urlEncode(encodeURIComponent(json));
+    }
+    function parseShareToken(token){
+      const json = decodeURIComponent(_b64urlDecode(token));
+      return JSON.parse(json);
+    }
+    function normalizeAssignmentsFromObject(obj){
+      const next = {};
+      for(const fx of FIXTURES){
+        const v = obj && obj[fx.id] ? obj[fx.id] : null;
+        const day = (v && v.day) ? v.day : (DEFAULT_DAYS[fx.id] || "Asettelematta");
+        const field = (v && typeof v.field === "string") ? v.field : (DEFAULT_FIELDS[fx.id] || "");
+        next[fx.id] = { day, field };
+      }
+      return next;
+    }
+    function applyAssignmentsFromURL(){
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("data");
+      if(!token) return false;
+      try{
+        const obj = parseShareToken(token);
+        assignments = normalizeAssignmentsFromObject(obj);
+        saveAssignments();
+        return true;
+      }catch(err){
+        console.warn("Share link invalid", err);
+        try{ setStatus("Virhe: jakolinkki on viallinen ⚠️"); }catch(_){}
+        return false;
+      }
+    }
+    function copyShareLink(){
+      const payload = {};
+      for(const [id,v] of Object.entries(assignments||{})){
+        payload[id] = { day: v.day || "Asettelematta", field: v.field || "" };
+      }
+      const token = makeShareToken(payload);
+      const url = window.location.origin + window.location.pathname + "?data=" + token;
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(url).then(()=>setStatus("Jakolinkki kopioitu ✅"))
+        .catch(()=>{ window.prompt("Kopioi jakolinkki:", url); setStatus("Jakolinkki valmis ✅"); });
+      }else{
+        window.prompt("Kopioi jakolinkki:", url);
+        setStatus("Jakolinkki valmis ✅");
+      }
+    }
+
+</script>
+</body>
+</html>
